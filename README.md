@@ -1,4 +1,11 @@
-# Jonahsnider Tap
+# Homebrew Tap
+
+A [Homebrew](https://brew.sh/) tap for my tools.
+
+## Supported tools
+
+- [how](https://github.com/jonahsnider/how) - Learn how to use CLI apps
+  - `brew install jonahsnider/tap/how`
 
 ## How do I install these formulae?
 
