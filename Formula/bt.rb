@@ -6,6 +6,11 @@ class Bt < Formula
   license "Apache-2.0"
   head "https://github.com/braintrustdata/bt.git", branch: "main"
 
+  livecheck do
+    url :stable
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
+  end
+
   depends_on "rust" => :build
 
   conflicts_with "bootterm", because: "both install a `bt` executable"
