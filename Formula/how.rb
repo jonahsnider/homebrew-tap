@@ -13,6 +13,20 @@ class How < Formula
     (share/"fish/vendor_conf.d").install "conf.d/how.fish"
   end
 
+  def caveats
+    return if Formula["glow"].any_version_installed? ||
+              Formula["bat"].any_version_installed? ||
+              Formula["leaf"].any_version_installed?
+
+    <<~EOS
+      how works best when a Markdown viewer is installed.
+      If you don't have one, try one of:
+        brew install glow
+        brew install bat
+        brew install leaf
+    EOS
+  end
+
   test do
     system "#{Formula["fish"].bin}/fish", "-c", "how --help"
   end
