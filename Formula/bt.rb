@@ -11,6 +11,12 @@ class Bt < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/bt-0.12.0"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "089f9489868b6f914b61dfd4ad2b86a029ccacaa1e20e0e0cd9037761c07a71f"
+    sha256 cellar: :any,                 x86_64_linux: "5f8d08106163a4ea5cfed06c4382d93cded26e0c8752f67b92e0f678c10aee44"
+  end
+
   depends_on "rust" => :build
 
   conflicts_with "bootterm", because: "both install a `bt` executable"
