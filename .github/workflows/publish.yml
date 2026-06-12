@@ -16,6 +16,13 @@ jobs:
       issues: read
       pull-requests: write
     steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.BREW_COMMIT_APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
         with:
@@ -33,6 +40,7 @@ jobs:
       - name: Push commits
         uses: Homebrew/actions/git-try-push@main
         with:
+          token: ${{ steps.app-token.outputs.token }}
           branch: main
 
       - name: Delete branch
