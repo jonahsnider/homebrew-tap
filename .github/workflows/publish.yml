@@ -37,14 +37,18 @@ jobs:
           PULL_REQUEST: ${{ github.event.pull_request.number }}
         run: brew pr-pull --debug --tap="$GITHUB_REPOSITORY" "$PULL_REQUEST"
 
+      - name: Set up push authentication
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+
       - name: Push commits
-        uses: Homebrew/actions/git-try-push@main
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          branch: main
+        run: GIT_TERMINAL_PROMPT=0 git push origin main
 
       - name: Delete branch
         if: github.event.pull_request.head.repo.fork == false
         env:
           BRANCH: ${{ github.event.pull_request.head.ref }}
-        run: git push --delete origin "$BRANCH"
+        run: GIT_TERMINAL_PROMPT=0 git push --delete origin "$BRANCH"
