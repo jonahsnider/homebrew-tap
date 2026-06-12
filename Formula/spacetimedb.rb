@@ -11,11 +11,14 @@ class Spacetimedb < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
+  depends_on "pkgconf" => :build
   depends_on "rust" => :build
+  depends_on "openssl@3"
 
   def install
     # Use source-tree file discovery since the release archive lacks git metadata.
     ENV["SPACETIMEDB_NIX_BUILD_GIT_COMMIT"] = "v#{version}"
+    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
 
     system "cargo", "install", *std_cargo_args(path: "crates/cli")
     mv bin/"spacetimedb-cli", bin/"spacetime"
