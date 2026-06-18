@@ -26,7 +26,7 @@ jobs:
           app-id: ${{ vars.BREW_COMMIT_APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Checkout Git repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - run: brew test-bot --only-cleanup-before
       - run: brew test-bot --only-setup
       - name: List formulae in tap
