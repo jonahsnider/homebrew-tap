@@ -23,7 +23,7 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.BREW_COMMIT_APP_ID }}
+          client-id: ${{ vars.BREW_COMMIT_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Checkout Git repository
         uses: actions/checkout@v7
@@ -40,4 +40,3 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           formulae: ${{ steps.list-formulae.outputs.formulae }}
           fork: false
-
