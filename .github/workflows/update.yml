@@ -29,8 +29,11 @@ jobs:
         uses: actions/checkout@v7
       - run: brew test-bot --only-cleanup-before
       - run: brew test-bot --only-setup
+      - name: Trust tap
+        run: brew trust jonahsnider/tap
       - name: List formulae in tap
         id: list-formulae
+        # List formula files in Formula directory, remove .rb extension, prefix with "jonahsnider/tap/", join with spaces
         run: |
           formulae=$(find Formula -maxdepth 1 -name "*.rb" -type f -exec basename {} .rb \; | sed 's/^/jonahsnider\/tap\//' | tr '\n' ' ')
           echo "formulae=$formulae" >> "$GITHUB_OUTPUT"
