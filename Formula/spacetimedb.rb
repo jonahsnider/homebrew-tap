@@ -23,7 +23,7 @@ class Spacetimedb < Formula
   def install
     # Use source-tree file discovery since the release archive lacks git metadata.
     ENV["SPACETIMEDB_NIX_BUILD_GIT_COMMIT"] = "v#{version}"
-    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@3")
 
     system "cargo", "install", *std_cargo_args(path: "crates/cli")
     mv bin/"spacetimedb-cli", bin/"spacetime"

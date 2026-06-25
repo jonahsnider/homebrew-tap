@@ -14,9 +14,9 @@ class How < Formula
   end
 
   def caveats
-    return if Formula["glow"].any_version_installed? ||
-              Formula["bat"].any_version_installed? ||
-              Formula["leaf"].any_version_installed?
+    return if formula_any_version_installed?("glow") ||
+              formula_any_version_installed?("bat") ||
+              formula_any_version_installed?("leaf")
 
     <<~EOS
       how works best when a Markdown viewer is installed.
