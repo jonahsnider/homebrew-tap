@@ -88,8 +88,6 @@ jobs:
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@main
-        with:
-          token: ${{ github.token }}
 
       - name: Set up git
         id: git-user-config
