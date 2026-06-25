@@ -1,0 +1,63 @@
+name: Reusable Homebrew automerge
+
+on:
+  workflow_call:
+    inputs:
+      published_label:
+        description: Label that marks PRs whose bottle commits were already published
+        default: CI-published-bottle-commits
+        required: false
+        type: string
+      publish_workflow:
+        description: Workflow file to dispatch for brew pr-pull
+        default: publish.yml
+        required: false
+        type: string
+
+jobs:
+  automerge:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+      issues: read
+      pull-requests: read
+
+    steps:
+      - name: Dispatch brew pr-pull for bot PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          PUBLISHED_LABEL: ${{ inputs.published_label }}
+          PUBLISH_WORKFLOW: ${{ inputs.publish_workflow }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          PR_NUMBER=$(gh api "repos/${{ github.repository }}/actions/runs/$RUN_ID" --jq '.pull_requests[0].number')
+
+          if [[ -z "$PR_NUMBER" || "$PR_NUMBER" == "null" ]]; then
+            echo "No pull request associated with this workflow run"
+            exit 0
+          fi
+
+          PR_AUTHOR=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER" --jq '.user.login')
+          HAS_PUBLISHED_LABEL=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json labels --jq ".labels[].name | select(. == \"$PUBLISHED_LABEL\")")
+
+          if [[ "$PR_AUTHOR" == "github-actions[bot]" || "$PR_AUTHOR" == "jonahsnider[bot]" ]]; then
+            if [[ -n "$HAS_PUBLISHED_LABEL" ]]; then
+              echo "PR #$PR_NUMBER already has published bottle commits, skipping"
+              exit 0
+            fi
+
+            echo "Dispatching brew pr-pull for PR #$PR_NUMBER at $HEAD_SHA"
+            gh workflow run "$PUBLISH_WORKFLOW" \
+              --repo "${{ github.repository }}" \
+              --ref "$DEFAULT_BRANCH" \
+              -f pull_request="$PR_NUMBER" \
+              -f head_sha="$HEAD_SHA"
+          else
+            echo "PR #$PR_NUMBER author is $PR_AUTHOR, skipping"
+          fi

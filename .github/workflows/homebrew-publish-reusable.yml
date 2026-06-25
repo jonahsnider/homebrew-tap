@@ -1,0 +1,172 @@
+name: Reusable Homebrew brew pr-pull
+
+on:
+  workflow_call:
+    inputs:
+      app_client_id:
+        description: GitHub App client ID used to push bottle commits
+        required: true
+        type: string
+      head_sha:
+        description: Expected pull request head commit SHA
+        required: false
+        type: string
+      published_label:
+        description: Label to add when bottle commits are pushed to the PR
+        default: CI-published-bottle-commits
+        required: false
+        type: string
+      pull_request:
+        description: Pull request number
+        required: true
+        type: string
+    secrets:
+      app_private_key:
+        description: GitHub App private key used to push bottle commits
+        required: true
+
+jobs:
+  pr-pull:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3.2.0
+        with:
+          client-id: ${{ inputs.app_client_id }}
+          private-key: ${{ secrets.app_private_key }}
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+
+      - name: Read pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+          PULL_REQUEST: ${{ inputs.pull_request }}
+        run: |
+          pr_data="$(gh api "repos/${{ github.repository }}/pulls/$PULL_REQUEST")"
+
+          actual_head_sha="$(jq --raw-output .head.sha <<< "$pr_data")"
+          expected_head_sha="${HEAD_SHA:-$actual_head_sha}"
+          state="$(jq --raw-output .state <<< "$pr_data")"
+          branch="$(jq --raw-output .head.ref <<< "$pr_data")"
+          remote_branch="$branch"
+          remote="$(jq --raw-output .head.repo.clone_url <<< "$pr_data")"
+          head_repo_owner="$(jq --raw-output .head.repo.owner.login <<< "$pr_data")"
+
+          if [[ "$state" != "open" ]]; then
+            echo "::error ::PR #$PULL_REQUEST is not open"
+            exit 1
+          fi
+
+          if [[ "$actual_head_sha" != "$expected_head_sha" ]]; then
+            echo "::error ::PR #$PULL_REQUEST changed since CI passed"
+            echo "::error ::Expected $expected_head_sha"
+            echo "::error ::Actual $actual_head_sha"
+            exit 1
+          fi
+
+          if [[ "$branch" == "main" ]]; then
+            branch="$head_repo_owner/main"
+          fi
+
+          {
+            echo "branch=$branch"
+            echo "head_sha=$expected_head_sha"
+            echo "remote=$remote"
+            echo "remote_branch=$remote_branch"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+        with:
+          token: ${{ github.token }}
+
+      - name: Set up git
+        id: git-user-config
+        uses: Homebrew/actions/git-user-config@main
+
+      - name: Checkout pull request branch
+        working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PULL_REQUEST: ${{ inputs.pull_request }}
+        run: gh pr checkout "$PULL_REQUEST" --repo "${{ github.repository }}"
+
+      - name: Pull bottles
+        id: pr-pull
+        working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+          EXPECTED_SHA: ${{ steps.pr.outputs.head_sha }}
+          PULL_REQUEST: ${{ inputs.pull_request }}
+        run: |
+          local_git_head="$(git rev-parse HEAD)"
+
+          brew pr-pull \
+            --debug \
+            --clean \
+            --no-cherry-pick \
+            --tap="$GITHUB_REPOSITORY" \
+            --head-sha="$EXPECTED_SHA" \
+            "$PULL_REQUEST"
+
+          new_head_sha="$(git rev-parse HEAD)"
+          {
+            echo "head_sha=$new_head_sha"
+            if [[ "$new_head_sha" != "$local_git_head" ]]; then
+              echo "bottle_commit=true"
+            else
+              echo "bottle_commit=false"
+            fi
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Push commits
+        if: fromJson(steps.pr-pull.outputs.bottle_commit)
+        uses: Homebrew/actions/git-try-push@main
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
+          remote: ${{ steps.pr.outputs.remote }}
+          branch: ${{ steps.pr.outputs.branch }}
+          remote_branch: ${{ steps.pr.outputs.remote_branch }}
+        env:
+          GIT_COMMITTER_NAME: ${{ steps.git-user-config.outputs.name }}
+          GIT_COMMITTER_EMAIL: ${{ steps.git-user-config.outputs.email }}
+
+      - name: Add published bottle label
+        if: fromJson(steps.pr-pull.outputs.bottle_commit)
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PUBLISHED_LABEL: ${{ inputs.published_label }}
+          PULL_REQUEST: ${{ inputs.pull_request }}
+        run: |
+          gh label create "$PUBLISHED_LABEL" \
+            --repo "${{ github.repository }}" \
+            --color "0e8a16" \
+            --description "Bottle commits have been pushed to this PR" \
+            --force
+          gh pr edit "$PULL_REQUEST" \
+            --repo "${{ github.repository }}" \
+            --add-label "$PUBLISHED_LABEL"
+
+      - name: Enable automerge
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          EXPECTED_SHA: ${{ steps.pr-pull.outputs.head_sha }}
+          PULL_REQUEST: ${{ inputs.pull_request }}
+        run: |
+          gh pr merge "$PULL_REQUEST" \
+            --repo "${{ github.repository }}" \
+            --auto \
+            --squash \
+            --match-head-commit "$EXPECTED_SHA"
