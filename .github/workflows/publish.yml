@@ -14,6 +14,11 @@ on:
         required: true
       head_sha:
         description: Expected pull request head commit SHA (optional)
+      no_upload:
+        description: Skip uploading bottles (optional)
+        default: false
+        required: false
+        type: boolean
       warn_on_upload_failure:
         description: Continue if bottle upload fails (optional)
         default: false
@@ -32,6 +37,7 @@ jobs:
     with:
       app_client_id: ${{ vars.BREW_COMMIT_CLIENT_ID }}
       head_sha: ${{ inputs.head_sha }}
+      no_upload: ${{ inputs.no_upload }}
       pull_request: ${{ inputs.pull_request }}
       warn_on_upload_failure: ${{ inputs.warn_on_upload_failure }}
     secrets:

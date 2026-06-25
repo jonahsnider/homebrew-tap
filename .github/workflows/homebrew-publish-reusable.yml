@@ -16,6 +16,11 @@ on:
         default: CI-published-bottle-commits
         required: false
         type: string
+      no_upload:
+        description: Skip uploading bottles, useful when rerunning after assets were already uploaded
+        default: false
+        required: false
+        type: boolean
       pull_request:
         description: Pull request number
         required: true
@@ -111,6 +116,7 @@ jobs:
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ steps.app-token.outputs.token }}
           EXPECTED_SHA: ${{ steps.pr.outputs.head_sha }}
+          NO_UPLOAD: ${{ inputs.no_upload }}
           PULL_REQUEST: ${{ inputs.pull_request }}
           WARN_ON_UPLOAD_FAILURE: ${{ inputs.warn_on_upload_failure }}
         run: |
@@ -125,6 +131,9 @@ jobs:
 
           if [[ "$WARN_ON_UPLOAD_FAILURE" == "true" ]]; then
             args+=(--warn-on-upload-failure)
+          fi
+          if [[ "$NO_UPLOAD" == "true" ]]; then
+            args+=(--no-upload)
           fi
 
           brew pr-pull "${args[@]}" "$PULL_REQUEST"
