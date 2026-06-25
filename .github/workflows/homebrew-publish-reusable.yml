@@ -20,6 +20,11 @@ on:
         description: Pull request number
         required: true
         type: string
+      warn_on_upload_failure:
+        description: Continue if bottle upload fails, useful when rerunning after partial upload success
+        default: false
+        required: false
+        type: boolean
     secrets:
       app_private_key:
         description: GitHub App private key used to push bottle commits
@@ -104,19 +109,25 @@ jobs:
         id: pr-pull
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
         env:
-          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+          HOMEBREW_GITHUB_API_TOKEN: ${{ steps.app-token.outputs.token }}
           EXPECTED_SHA: ${{ steps.pr.outputs.head_sha }}
           PULL_REQUEST: ${{ inputs.pull_request }}
+          WARN_ON_UPLOAD_FAILURE: ${{ inputs.warn_on_upload_failure }}
         run: |
           local_git_head="$(git rev-parse HEAD)"
+          args=(
+            --debug
+            --clean
+            --no-cherry-pick
+            --tap="$GITHUB_REPOSITORY"
+            --head-sha="$EXPECTED_SHA"
+          )
 
-          brew pr-pull \
-            --debug \
-            --clean \
-            --no-cherry-pick \
-            --tap="$GITHUB_REPOSITORY" \
-            --head-sha="$EXPECTED_SHA" \
-            "$PULL_REQUEST"
+          if [[ "$WARN_ON_UPLOAD_FAILURE" == "true" ]]; then
+            args+=(--warn-on-upload-failure)
+          fi
+
+          brew pr-pull "${args[@]}" "$PULL_REQUEST"
 
           new_head_sha="$(git rev-parse HEAD)"
           {
