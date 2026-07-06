@@ -102,6 +102,8 @@ jobs:
       - name: Set up git
         id: git-user-config
         uses: Homebrew/actions/git-user-config@main
+        with:
+          username: ${{ steps.app-token.outputs.app-slug }}[bot]
 
       - name: Checkout pull request branch
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
