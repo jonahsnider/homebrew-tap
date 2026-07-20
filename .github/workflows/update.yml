@@ -8,6 +8,9 @@ on:
     - cron: "0 0 * * *"
   workflow_dispatch:
 
+concurrency:
+  group: update-package-versions
+
 jobs:
   update:
     name: Update package versions
@@ -33,9 +36,10 @@ jobs:
         run: brew trust jonahsnider/tap
       - name: List formulae in tap
         id: list-formulae
-        # List formula files in Formula directory, remove .rb extension, prefix with "jonahsnider/tap/", join with spaces
+        # github-mcp-server has a dedicated updater because brew cannot bump
+        # URLs and checksums nested in OS and architecture conditionals.
         run: |
-          formulae=$(find Formula -maxdepth 1 -name "*.rb" -type f -exec basename {} .rb \; | sed 's/^/jonahsnider\/tap\//' | tr '\n' ' ')
+          formulae=$(find Formula -maxdepth 1 -name "*.rb" ! -name "github-mcp-server.rb" -type f -exec basename {} .rb \; | sed 's/^/jonahsnider\/tap\//' | tr '\n' ' ')
           echo "formulae=$formulae" >> "$GITHUB_OUTPUT"
       - name: Bump packages
         uses: Homebrew/actions/bump-packages@main
@@ -43,3 +47,90 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           formulae: ${{ steps.list-formulae.outputs.formulae }}
           fork: false
+
+  update-github-mcp-server:
+    name: Update github-mcp-server
+
+    runs-on: macos-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3.2.0
+        with:
+          client-id: ${{ vars.BREW_COMMIT_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Checkout Git repository
+        uses: actions/checkout@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
+      - run: brew test-bot --only-cleanup-before
+      - run: brew test-bot --only-setup
+      - name: Trust tap
+        run: brew trust jonahsnider/tap
+      - name: Update formula
+        id: update
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          script/update-github-mcp-server
+          if git diff --quiet -- Formula/github-mcp-server.rb; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          version=$(ruby -e 'line = File.readlines(ARGV.fetch(0)).find { |candidate| candidate.start_with?(%q{  version "}) }; puts line.split(%q{"})[1]' Formula/github-mcp-server.rb)
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Validate formula
+        if: steps.update.outputs.changed == 'true'
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          brew style Formula/github-mcp-server.rb
+          brew audit --strict jonahsnider/tap/github-mcp-server
+          brew fetch --formula --force jonahsnider/tap/github-mcp-server
+      - name: Configure Git user
+        if: steps.update.outputs.changed == 'true'
+        uses: Homebrew/actions/git-user-config@main
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      - name: Commit update
+        if: steps.update.outputs.changed == 'true'
+        env:
+          VERSION: ${{ steps.update.outputs.version }}
+        run: |
+          git switch -c update/github-mcp-server
+          git add Formula/github-mcp-server.rb
+          git commit -m "github-mcp-server $VERSION"
+      - name: Push update
+        if: steps.update.outputs.changed == 'true'
+        uses: Homebrew/actions/git-try-push@main
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: update/github-mcp-server
+          remote_branch: update/github-mcp-server
+          origin_branch: main
+          force: true
+      - name: Find existing pull request
+        if: steps.update.outputs.changed == 'true'
+        id: existing-pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          number=$(gh pr list --head update/github-mcp-server --base main --state open --json number --jq '.[0].number // ""')
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+      - name: Create pull request
+        if: steps.update.outputs.changed == 'true' && steps.existing-pr.outputs.number == ''
+        uses: Homebrew/actions/create-pull-request@main
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          head: update/github-mcp-server
+          base: main
+          title: github-mcp-server ${{ steps.update.outputs.version }}
+          body: Created by the dedicated github-mcp-server updater.
