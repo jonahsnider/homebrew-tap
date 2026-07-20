@@ -3,7 +3,6 @@
 
 require "json"
 require "open3"
-require "pathname"
 
 REPOSITORY = "github/github-mcp-server"
 ARTIFACTS = %w[
@@ -29,7 +28,7 @@ manifest = capture!(
   "gh", "release", "download", tag,
   "--repo", REPOSITORY,
   "--pattern", "github-mcp-server_*_checksums.txt",
-  "--output", "-",
+  "--output", "-"
 )
 
 checksums = {}
@@ -52,10 +51,10 @@ contents = formula_path.read
 version_pattern = /^  version "[^"]+"$/
 abort "Expected exactly one version stanza" unless contents.scan(version_pattern).one?
 
-contents.sub!(version_pattern, %(  version "#{version}"))
+contents.sub!(version_pattern, %Q(  version "#{version}"))
 
 ARTIFACTS.each do |artifact|
-  checksum_pattern = /^(\s+url "[^"\n]*\/#{Regexp.escape(artifact)}"\n)(\s+)sha256 "[0-9a-f]{64}"$/
+  checksum_pattern = %r{^(\s+url "[^"\n]*/#{Regexp.escape(artifact)}"\n)(\s+)sha256 "[0-9a-f]{64}"$}
   abort "Expected exactly one URL and checksum for #{artifact}" unless contents.scan(checksum_pattern).one?
 
   contents.sub!(checksum_pattern) do
