@@ -1,7 +1,7 @@
 class GithubMcpServer < Formula
   desc "GitHub Model Context Protocol server for AI tools"
   homepage "https://github.com/github/github-mcp-server"
-  version "1.6.0"
+  version "1.7.0"
   license "MIT"
 
   livecheck do
@@ -12,24 +12,24 @@ class GithubMcpServer < Formula
   on_macos do
     on_arm do
       url "https://github.com/github/github-mcp-server/releases/download/v#{version}/github-mcp-server_Darwin_arm64.tar.gz"
-      sha256 "cdce71ef6f893d463910678ec298bba76610ca4591bf35263f0ff0ec35928f9e"
+      sha256 "dbe22c73b3eb9491cc3e27dba45352b980b1c43e4c857645689a0251c5e06a21"
     end
 
     on_intel do
       url "https://github.com/github/github-mcp-server/releases/download/v#{version}/github-mcp-server_Darwin_x86_64.tar.gz"
-      sha256 "75bf4fb2c855a3af5381056b88afdf2e2b67e330906aadfbae9682e8dcacbd3f"
+      sha256 "d94d018641a17e9193148634c91701760ebf7963efc0b00b2a65abe7ded32d2e"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/github/github-mcp-server/releases/download/v#{version}/github-mcp-server_Linux_arm64.tar.gz"
-      sha256 "25f8028304202674ec2e9977fec3ca0897cac33866dabb51aefd418bc0ce7ef2"
+      sha256 "50bd6b4e604d1039577710431c7025a9b1c05b8acce458001bb53f792e78d43f"
     end
 
     on_intel do
       url "https://github.com/github/github-mcp-server/releases/download/v#{version}/github-mcp-server_Linux_x86_64.tar.gz"
-      sha256 "27443d173f209e60d4af9777e624bfea3de1af24897d46cc7324f01cf279a41d"
+      sha256 "b653a2a01f33e9a726b581fa0d8a8d9a05a86af419e5ab33b8e26858366d1d66"
     end
   end
 
