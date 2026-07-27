@@ -16,14 +16,14 @@ class How < Formula
   def caveats
     return if formula_any_version_installed?("glow") ||
               formula_any_version_installed?("bat") ||
-              formula_any_version_installed?("leaf")
+              formula_any_version_installed?("leaf-markdown-viewer")
 
     <<~EOS
       how works best when a Markdown viewer is installed.
       If you don't have one, try one of:
         brew install glow
         brew install bat
-        brew install leaf
+        brew install leaf-markdown-viewer
     EOS
   end
 
