@@ -1,7 +1,6 @@
 class GithubMcpServer < Formula
   desc "GitHub Model Context Protocol server for AI tools"
   homepage "https://github.com/github/github-mcp-server"
-  version "1.7.0"
   license "MIT"
 
   livecheck do
@@ -18,25 +17,25 @@ class GithubMcpServer < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/github/github-mcp-server/releases/download/v#{version}/github-mcp-server_Darwin_arm64.tar.gz"
-      sha256 "dbe22c73b3eb9491cc3e27dba45352b980b1c43e4c857645689a0251c5e06a21"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.8.0/github-mcp-server_Darwin_arm64.tar.gz"
+      sha256 "1da9cff2490f2908e2fd051e090c5c0792cd44773ee195b85ad0f549d3c435d0"
     end
 
     on_intel do
-      url "https://github.com/github/github-mcp-server/releases/download/v#{version}/github-mcp-server_Darwin_x86_64.tar.gz"
-      sha256 "d94d018641a17e9193148634c91701760ebf7963efc0b00b2a65abe7ded32d2e"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.8.0/github-mcp-server_Darwin_x86_64.tar.gz"
+      sha256 "5fef4459a7e67c64a8e7db3a858f992a6f03595225328f842b34f1b468a89c70"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/github/github-mcp-server/releases/download/v#{version}/github-mcp-server_Linux_arm64.tar.gz"
-      sha256 "50bd6b4e604d1039577710431c7025a9b1c05b8acce458001bb53f792e78d43f"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.8.0/github-mcp-server_Linux_arm64.tar.gz"
+      sha256 "c4b0fe8d4e31c079e5c3f3a54050a08449dae6fa8189ec5998822555ad27bde8"
     end
 
     on_intel do
-      url "https://github.com/github/github-mcp-server/releases/download/v#{version}/github-mcp-server_Linux_x86_64.tar.gz"
-      sha256 "b653a2a01f33e9a726b581fa0d8a8d9a05a86af419e5ab33b8e26858366d1d66"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.8.0/github-mcp-server_Linux_x86_64.tar.gz"
+      sha256 "b2754921aec1b1302b19a71531d26d242ef0e7f1e05696b8444beab5a7e61d5b"
     end
   end
 
