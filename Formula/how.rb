@@ -1,8 +1,8 @@
 class How < Formula
   desc "Learn how to use CLI apps"
   homepage "https://github.com/jonahsnider/how"
-  url "https://github.com/jonahsnider/how/archive/refs/tags/v4.0.1.tar.gz"
-  sha256 "a0ad9b4d1480609adc0fea5f3ca933ce9f123c2cd92c0b19e95eeaf2b6bcd278"
+  url "https://github.com/jonahsnider/how/archive/refs/tags/v4.1.0.tar.gz"
+  sha256 "a6afbf850969f94c4b8d847998d8f218ff85abf0ca7f4bd431c95aa3e8fb55f2"
   license "Apache-2.0"
 
   depends_on "fish"
