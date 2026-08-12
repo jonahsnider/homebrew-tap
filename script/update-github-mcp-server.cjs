@@ -53,24 +53,20 @@ module.exports = async ({ github, core }) => {
 
   const formulaPath = join(__dirname, "../Formula/github-mcp-server.rb");
   const originalContents = await readFile(formulaPath, "utf8");
-  let contents = replaceOnce(
-    originalContents,
-    /^  version "[^"]+"$/m,
-    `  version "${version}"`,
-    "version stanza",
-  );
+  let contents = originalContents;
 
   for (const artifact of artifacts) {
-    const checksumPattern = new RegExp(
-      `^(\\s+url "[^"\\n]*/${escapeRegex(artifact)}"\\n)(\\s+)sha256 "[0-9a-f]{64}"$`,
+    const artifactPattern = new RegExp(
+      `^([ \\t]+)url "[^"\\n]*/${escapeRegex(artifact)}"\\n\\1sha256 "[0-9a-f]{64}"$`,
       "m",
     );
 
     contents = replaceOnce(
       contents,
-      checksumPattern,
-      (_match, url, indentation) =>
-        `${url}${indentation}sha256 "${checksums.get(artifact)}"`,
+      artifactPattern,
+      (_match, indentation) =>
+        `${indentation}url "https://github.com/${owner}/${repo}/releases/download/v${version}/${artifact}"\n` +
+        `${indentation}sha256 "${checksums.get(artifact)}"`,
       `URL and checksum for ${artifact}`,
     );
   }
