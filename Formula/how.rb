@@ -5,6 +5,12 @@ class How < Formula
   sha256 "a6afbf850969f94c4b8d847998d8f218ff85abf0ca7f4bd431c95aa3e8fb55f2"
   license "Apache-2.0"
 
+  bottle do
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/how-4.1.0"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "a724d3e0a19374cf3d841e33c1dd5d193ad39b49c6b63c824a8fe9ef199c923f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "af32142fe86ff3ae35a73479743144e41df2afe578d6df0a72df686929f7f6e1"
+  end
+
   depends_on "fish"
 
   def install
