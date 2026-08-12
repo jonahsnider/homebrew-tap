@@ -89,7 +89,7 @@ jobs:
         run: |
           brew style Formula/github-mcp-server.rb
           brew audit --strict jonahsnider/tap/github-mcp-server
-          brew fetch --formula --force jonahsnider/tap/github-mcp-server
+          brew fetch --formula --build-from-source --force jonahsnider/tap/github-mcp-server
       - name: Configure Git user
         if: steps.update.outputs.changed == 'true'
         uses: Homebrew/actions/git-user-config@main
