@@ -6,9 +6,9 @@ class How < Formula
   license "Apache-2.0"
 
   bottle do
-    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/how-4.1.0"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "a724d3e0a19374cf3d841e33c1dd5d193ad39b49c6b63c824a8fe9ef199c923f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "af32142fe86ff3ae35a73479743144e41df2afe578d6df0a72df686929f7f6e1"
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/how-4.1.1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "ee7036c1f76c0aa2175b37a6bfa1e77db52f5c4f1cf07f0bf1e9acadd6d2969e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "866943c9daba12abc9d7bd233bd53deafc86b5db2fbaaa30f446fa2108218e9d"
   end
 
   depends_on "fish"
