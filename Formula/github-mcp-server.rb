@@ -16,25 +16,25 @@ class GithubMcpServer < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/github/github-mcp-server/releases/download/v1.10.0/github-mcp-server_Darwin_arm64.tar.gz"
-      sha256 "edecaa34816b2afc9d3a0bb265109dccf5aa5040ac8bb3113c174c80acc6a765"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.10.1/github-mcp-server_Darwin_arm64.tar.gz"
+      sha256 "ca530ba9abf04030104166cc37e1072087a30a173e921c0ed9064f98c73ca039"
     end
 
     on_intel do
-      url "https://github.com/github/github-mcp-server/releases/download/v1.10.0/github-mcp-server_Darwin_x86_64.tar.gz"
-      sha256 "d05b697460f935988650b3ebc0390ff9f774fb3822ca989b39ef73f163bb8dbc"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.10.1/github-mcp-server_Darwin_x86_64.tar.gz"
+      sha256 "ea6e86baea583c6c5b55cce071c1c19253009a90f1e987788cb5eb228fcd9556"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/github/github-mcp-server/releases/download/v1.10.0/github-mcp-server_Linux_arm64.tar.gz"
-      sha256 "b37e0e80f863fd9e3ebb50be773fa0c3f73ddb9d9e735a48d5ad6dc2bf5795ac"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.10.1/github-mcp-server_Linux_arm64.tar.gz"
+      sha256 "c51dc6cf192c35a328b9f71696d42c38a9a3ba3c2ffe010da836bed071d1ac8a"
     end
 
     on_intel do
-      url "https://github.com/github/github-mcp-server/releases/download/v1.10.0/github-mcp-server_Linux_x86_64.tar.gz"
-      sha256 "0a47a49c5a54e6e26f40e17b7e8e410d753c6cd1ba23be42fb016ca91878c65c"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.10.1/github-mcp-server_Linux_x86_64.tar.gz"
+      sha256 "c2629e850a344275cfc5a1590acdfd8c11476a44b688812d460163768e05572d"
     end
   end
 
