@@ -9,32 +9,32 @@ class GithubMcpServer < Formula
   end
 
   bottle do
-    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/github-mcp-server-1.10.1"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "c0be231378558b2eed1a0458a02240db75427c3561aeb79463fab7b48c2c90ce"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "6e6ae6a03cd6db9501af81f3a7b8d93147c2ea61f7705da1b5f53e50f4731bcf"
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/github-mcp-server-1.11.0"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "b9e18c4d3f3075b039d0143b0a3035e3af8acffd0c70111593a425902ad8bd90"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "495c1f62d6367f82bd0a69391139da6ad550fa67074c746e7f533f959109b7f5"
   end
 
   on_macos do
     on_arm do
-      url "https://github.com/github/github-mcp-server/releases/download/v1.10.1/github-mcp-server_Darwin_arm64.tar.gz"
-      sha256 "ca530ba9abf04030104166cc37e1072087a30a173e921c0ed9064f98c73ca039"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.11.0/github-mcp-server_Darwin_arm64.tar.gz"
+      sha256 "b08e962fb797a9069fb932c25957209026dcbaa9478f3a248a1bf2354af978ec"
     end
 
     on_intel do
-      url "https://github.com/github/github-mcp-server/releases/download/v1.10.1/github-mcp-server_Darwin_x86_64.tar.gz"
-      sha256 "ea6e86baea583c6c5b55cce071c1c19253009a90f1e987788cb5eb228fcd9556"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.11.0/github-mcp-server_Darwin_x86_64.tar.gz"
+      sha256 "e7cc6b5d16bcb86b01cae2ba32fa7525266a10c96db8d64df63a172ebb7b8f95"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/github/github-mcp-server/releases/download/v1.10.1/github-mcp-server_Linux_arm64.tar.gz"
-      sha256 "c51dc6cf192c35a328b9f71696d42c38a9a3ba3c2ffe010da836bed071d1ac8a"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.11.0/github-mcp-server_Linux_arm64.tar.gz"
+      sha256 "3f7615254f6b619469c471c5d275029299ff7431c93d6075496ea4b2eec020cb"
     end
 
     on_intel do
-      url "https://github.com/github/github-mcp-server/releases/download/v1.10.1/github-mcp-server_Linux_x86_64.tar.gz"
-      sha256 "c2629e850a344275cfc5a1590acdfd8c11476a44b688812d460163768e05572d"
+      url "https://github.com/github/github-mcp-server/releases/download/v1.11.0/github-mcp-server_Linux_x86_64.tar.gz"
+      sha256 "3b73bb7be0c8b043f861e90410df8ebdfc71b83128c54ced75fb32c4ff697fc5"
     end
   end
 
