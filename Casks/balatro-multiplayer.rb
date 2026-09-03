@@ -2,8 +2,7 @@ cask "balatro-multiplayer" do
   version "1.0.18"
   sha256 "dbb8c635f3a30bca89bc835d061c0e44cb1da95238ca7ad67084ebb9450efa67"
 
-  url "https://github.com/Balatro-Multiplayer/Balatro-Multiplayer-Launcher/releases/download/v#{version}/balatro-multiplayer-launcher.dmg",
-      verified: "github.com/Balatro-Multiplayer/Balatro-Multiplayer-Launcher/"
+  url "https://github.com/Balatro-Multiplayer/Balatro-Multiplayer-Launcher/releases/download/v#{version}/balatro-multiplayer-launcher.dmg"
   name "Balatro Multiplayer Launcher"
   desc "Official launcher for Balatro Multiplayer"
   homepage "https://balatromp.com/"
