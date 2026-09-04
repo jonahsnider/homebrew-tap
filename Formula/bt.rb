@@ -12,9 +12,9 @@ class Bt < Formula
   end
 
   bottle do
-    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/bt-0.19.0"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "1bb664d4844ce5f381c96a4301e9fcc2b3ca7fdc3cb4400c28643be618d305cc"
-    sha256 cellar: :any,                 x86_64_linux: "07cd4a882d8a0f18f7a4ac0c23ecc9996955492815b6f86575a8b11edb7e61f9"
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/bt-0.19.1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "f40ee8b72e97e731b151217786cb0156c0aa6ca812ac7a68bad33bb120ba8dde"
+    sha256 cellar: :any,                 x86_64_linux: "d9a55990d1478a5fc2feedd26f9c08587e83d544d4b7c374d7eec182da42e373"
   end
 
   depends_on "rust" => :build
