@@ -9,9 +9,9 @@ class GithubMcpServer < Formula
   end
 
   bottle do
-    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/github-mcp-server-1.11.0"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "b9e18c4d3f3075b039d0143b0a3035e3af8acffd0c70111593a425902ad8bd90"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "495c1f62d6367f82bd0a69391139da6ad550fa67074c746e7f533f959109b7f5"
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/github-mcp-server-1.12.0"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "bd8c14a2c8f8eb53d01a725cb73b5526a370299e18c1298e07d1485b9b1424c3"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "a32722440bcfac1ea7de5bb6a12ced0ee854bfc213dffcd6d606e24d20d48649"
   end
 
   on_macos do
