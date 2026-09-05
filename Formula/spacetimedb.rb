@@ -1,8 +1,8 @@
 class Spacetimedb < Formula
   desc "Database that is also a server"
   homepage "https://spacetimedb.com/"
-  url "https://github.com/clockworklabs/SpacetimeDB/archive/refs/tags/v2.9.0.tar.gz"
-  sha256 "f390750c75dcf895515c1c3fda2a505d34a19e95dcaa2b5dc1c9da6eea74d0a4"
+  url "https://github.com/clockworklabs/SpacetimeDB/archive/refs/tags/v2.10.0.tar.gz"
+  sha256 "c71f4c95479f30a4ad96db83df5a18f96d658b621df08e9f9340ce9ed5d5f484"
   license "BUSL-1.1"
   head "https://github.com/clockworklabs/SpacetimeDB.git", branch: "master"
 
@@ -12,8 +12,8 @@ class Spacetimedb < Formula
   end
 
   bottle do
-    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/spacetimedb-2.9.0"
-    sha256 cellar: :any, arm64_tahoe: "17ef0125765c301c612b2881faa93bd8122a3f708a0ce905f2ef8931d633aa2e"
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/spacetimedb-2.10.0"
+    sha256 cellar: :any, arm64_tahoe: "24be1c5b655742fbb4db44e63c671a753cac42649a717a5bc4f4af7086e062c8"
   end
 
   depends_on "pkgconf" => :build
