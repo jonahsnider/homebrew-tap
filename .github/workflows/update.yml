@@ -4,9 +4,18 @@ on:
   push:
     branches:
       - main
+    paths:
+      - .github/workflows/update.yml
   schedule:
-    - cron: "0 0 * * *"
+    # Every day at 19:10 UTC
+    - cron: "10 19 * * *"
   workflow_dispatch:
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash -xeuo pipefail {0}
 
 concurrency:
   group: update-package-versions
@@ -15,7 +24,7 @@ jobs:
   update:
     name: Update package versions
 
-    runs-on: macos-latest
+    runs-on: macos-26
 
     permissions:
       contents: write
@@ -24,16 +33,19 @@ jobs:
     steps:
       - name: Generate GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v3.2.0
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.BREW_COMMIT_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Checkout Git repository
-        uses: actions/checkout@v7
-      - run: brew test-bot --only-cleanup-before
-      - run: brew test-bot --only-setup
-      - name: Trust tap
-        run: brew trust jonahsnider/tap
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      - name: List casks in tap
+        id: list-casks
+        run: |
+          casks=$(find Casks -maxdepth 1 -name "*.rb" -type f -exec basename {} .rb \; | sed 's/^/jonahsnider\/tap\//' | tr '\n' ' ')
+          echo "casks=$casks" >> "$GITHUB_OUTPUT"
       - name: List formulae in tap
         id: list-formulae
         # github-mcp-server has a dedicated updater because brew cannot bump
@@ -42,16 +54,17 @@ jobs:
           formulae=$(find Formula -maxdepth 1 -name "*.rb" ! -name "github-mcp-server.rb" -type f -exec basename {} .rb \; | sed 's/^/jonahsnider\/tap\//' | tr '\n' ' ')
           echo "formulae=$formulae" >> "$GITHUB_OUTPUT"
       - name: Bump packages
-        uses: Homebrew/actions/bump-packages@main
+        uses: Homebrew/actions/bump-packages@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
         with:
           token: ${{ steps.app-token.outputs.token }}
+          casks: ${{ steps.list-casks.outputs.casks }}
           formulae: ${{ steps.list-formulae.outputs.formulae }}
           fork: false
 
   update-github-mcp-server:
     name: Update github-mcp-server
 
-    runs-on: macos-latest
+    runs-on: macos-26
 
     permissions:
       contents: write
@@ -60,23 +73,17 @@ jobs:
     steps:
       - name: Generate GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v3.2.0
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.BREW_COMMIT_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Checkout Git repository
-        uses: actions/checkout@v7
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-          fetch-depth: 0
-          persist-credentials: false
-      - run: brew test-bot --only-cleanup-before
-      - run: brew test-bot --only-setup
-      - name: Trust tap
-        run: brew trust jonahsnider/tap
       - name: Update formula
         id: update
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -92,7 +99,7 @@ jobs:
           brew fetch --formula --build-from-source --force jonahsnider/tap/github-mcp-server
       - name: Configure Git user
         if: steps.update.outputs.changed == 'true'
-        uses: Homebrew/actions/git-user-config@main
+        uses: Homebrew/actions/git-user-config@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
         with:
           token: ${{ steps.app-token.outputs.token }}
       - name: Commit update
@@ -105,7 +112,7 @@ jobs:
           git commit -m "github-mcp-server $VERSION"
       - name: Push update
         if: steps.update.outputs.changed == 'true'
-        uses: Homebrew/actions/git-try-push@main
+        uses: Homebrew/actions/git-try-push@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           branch: update/github-mcp-server
@@ -115,7 +122,7 @@ jobs:
       - name: Find existing pull request
         if: steps.update.outputs.changed == 'true'
         id: existing-pr
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           result-encoding: string
@@ -130,7 +137,7 @@ jobs:
             return pullRequests[0]?.number ?? "";
       - name: Create pull request
         if: steps.update.outputs.changed == 'true' && steps.existing-pr.outputs.result == ''
-        uses: Homebrew/actions/create-pull-request@main
+        uses: Homebrew/actions/create-pull-request@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           head: update/github-mcp-server

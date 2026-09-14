@@ -35,19 +35,27 @@ on:
         description: GitHub App private key used to push bottle commits
         required: true
 
+permissions: {}
+
+defaults:
+  run:
+    shell: bash -xeuo pipefail {0}
+
 jobs:
   pr-pull:
     runs-on: ubuntu-latest
     permissions:
       actions: read
+      attestations: write
       checks: read
       contents: write
+      id-token: write
       issues: write
       pull-requests: write
     steps:
       - name: Generate GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v3.2.0
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ inputs.app_client_id }}
           private-key: ${{ secrets.app_private_key }}
@@ -97,11 +105,11 @@ jobs:
 
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
 
       - name: Set up git
         id: git-user-config
-        uses: Homebrew/actions/git-user-config@main
+        uses: Homebrew/actions/git-user-config@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
         with:
           username: ${{ steps.app-token.outputs.app-slug }}[bot]
 
@@ -127,6 +135,7 @@ jobs:
             --debug
             --clean
             --no-cherry-pick
+            --retain-bottle-dir
             --tap="$GITHUB_REPOSITORY"
             --head-sha="$EXPECTED_SHA"
           )
@@ -150,9 +159,15 @@ jobs:
             fi
           } >> "$GITHUB_OUTPUT"
 
+      - name: Generate build provenance
+        if: fromJson(steps.pr-pull.outputs.bottle_commit)
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: "${{ steps.pr-pull.outputs.bottle_path }}/*.tar.gz"
+
       - name: Push commits
         if: fromJson(steps.pr-pull.outputs.bottle_commit)
-        uses: Homebrew/actions/git-try-push@main
+        uses: Homebrew/actions/git-try-push@1e34f2e2acaa766b7efacb8c26352e6abbb023f9 # 2026.09.13.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
