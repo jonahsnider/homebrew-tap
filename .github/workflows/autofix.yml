@@ -32,7 +32,8 @@ jobs:
           restore-keys: ubuntu-latest-rubygems-
 
       - name: Fix style issues
-        run: brew style jonahsnider/tap --fix
+        # Keep RuboCop's Markdown preprocessing from rewriting README.md.
+        run: brew style --fix Casks/*.rb Formula/*.rb
 
       - name: Run autofix.ci
         uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a # v1
