@@ -1,8 +1,8 @@
 class Bt < Formula
   desc "Braintrust command-line interface"
   homepage "https://www.braintrust.dev/docs/reference/cli"
-  url "https://github.com/braintrustdata/bt/releases/download/v0.19.3/source.tar.gz"
-  sha256 "d4f1264de870d96faaf8ed09a4a8d3c9f291f6b3512d4e9b544d59a010f1ff68"
+  url "https://github.com/braintrustdata/bt/releases/download/v0.20.0/source.tar.gz"
+  sha256 "381e411b518d6f71d38878c2eb2551ee965176b9555985f31755b1c92275516f"
   license "Apache-2.0"
   head "https://github.com/braintrustdata/bt.git", branch: "main"
 
