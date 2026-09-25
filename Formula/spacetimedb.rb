@@ -1,8 +1,8 @@
 class Spacetimedb < Formula
   desc "Database that is also a server"
   homepage "https://spacetimedb.com/"
-  url "https://github.com/clockworklabs/SpacetimeDB/archive/refs/tags/v2.10.1.tar.gz"
-  sha256 "9480f93dcae2249178b70e9df013df7fdb2d2091bdf4b3be8553f78bd1301423"
+  url "https://github.com/clockworklabs/SpacetimeDB/archive/refs/tags/v2.11.0.tar.gz"
+  sha256 "1f45f404dcdfcefdf0d4aab97dd92384022373d733b44eee9cd3fcd58a9d2019"
   license "BUSL-1.1"
   head "https://github.com/clockworklabs/SpacetimeDB.git", branch: "master"
 
