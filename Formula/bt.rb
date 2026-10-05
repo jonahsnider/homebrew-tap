@@ -17,6 +17,8 @@ class Bt < Formula
     sha256 cellar: :any,                 x86_64_linux: "01ce64c47adb97259e2e3076f5a2b159d0dfa6f96cd9a280328b44dd28b96218"
   end
 
+  depends_on "node" => :build
+  depends_on "pnpm@10" => :build
   depends_on "rust" => :build
 
   conflicts_with "bootterm", because: "both install a `bt` executable"
@@ -27,6 +29,9 @@ class Bt < Formula
       ENV["BT_UPDATE_CHANNEL"] = "stable"
     end
 
+    # Use Homebrew's pnpm instead of downloading the version in package.json.
+    (buildpath/".npmrc").write "manage-package-manager-versions=false\n"
+    system "pnpm", "install", "--frozen-lockfile", "--ignore-scripts"
     system "cargo", "install", *std_cargo_args
   end
 
