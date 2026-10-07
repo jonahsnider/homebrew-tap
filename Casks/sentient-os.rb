@@ -1,6 +1,6 @@
 cask "sentient-os" do
-  version "1.6"
-  sha256 "77b04faf12c04adca3e9117596733de4f4fc542dfa17e6f0ab3fc70aa5a69419"
+  version "1.7"
+  sha256 "333627f799c29a18399e078a7e744fed6d0388d7868b37ebbba9f667f4162a1f"
 
   url "https://github.com/Sentient-OS-Labs/sentient-os/releases/download/#{version}/SentientOS-#{version}.dmg"
   name "Sentient OS"
