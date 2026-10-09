@@ -12,8 +12,8 @@ class Spacetimedb < Formula
   end
 
   bottle do
-    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/spacetimedb-2.11.0"
-    sha256 cellar: :any, arm64_tahoe: "f46a6af2180fb9fd05244607782273c03e35015df8c75d016ddb42d07afae0cd"
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/spacetimedb-2.11.1"
+    sha256 cellar: :any, arm64_tahoe: "662ba4939989f139e0ed4062e3821304f5630cd86bd1902ca9825237bab7d885"
   end
 
   depends_on "pkgconf" => :build
