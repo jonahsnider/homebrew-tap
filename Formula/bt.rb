@@ -1,8 +1,8 @@
 class Bt < Formula
   desc "Braintrust command-line interface"
   homepage "https://www.braintrust.dev/docs/reference/cli"
-  url "https://github.com/braintrustdata/bt/releases/download/v0.27.0/source.tar.gz"
-  sha256 "eeb7ebf31deeecdc7823dd46c4bd1e621acf05571b9d33e8e58787af1bb6be4b"
+  url "https://github.com/braintrustdata/bt/releases/download/v0.27.1/source.tar.gz"
+  sha256 "3922506b9cc9ab4004e824474833865bb81651aae1a4093a871c3c8aa3ad12a5"
   license "Apache-2.0"
   head "https://github.com/braintrustdata/bt.git", branch: "main"
 
@@ -12,9 +12,9 @@ class Bt < Formula
   end
 
   bottle do
-    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/bt-0.27.0"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "77c521624085a1be9f0ef42a15cd7fc7414842b0c183a6f92a8b77738fd43d86"
-    sha256 cellar: :any,                 x86_64_linux: "37af213a926f21dd0dbebd641b78f337d11ee4deaa5511bd87f8ea050411ce5c"
+    root_url "https://github.com/jonahsnider/homebrew-tap/releases/download/bt-0.27.1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "e3be10b1a6594f38c4759e99d2312bc21b0b6ac26b12b8deff84c4d5d930f667"
+    sha256 cellar: :any,                 x86_64_linux: "4302b5d94af9ea1b0cf69ba7699ad8c0abc55cb7e4ea6f8ec8bdedf96f291361"
   end
 
   depends_on "node" => :build
